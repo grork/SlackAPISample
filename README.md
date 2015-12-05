@@ -14,13 +14,13 @@ Strike through = Done
 + ~~Spend time understanding the auth / calling API~~
 	+ ~~CURL it up yo'~~
 	+ ~~Check support for 'stuff didn't change since last request'~~ _(No, no caching)_
-+ Setup Fiddler, install certs
++ ~~Setup Fiddler, install certs~~
 
 ## Basic Data Access ##
 + Add network request that outputs to the main content area on success and failure
-+ Add sample response file to repo
-	+ Normal response
-	+ Error responses from api page
++ ~~Add sample response file to repo~~
+	+ ~~Normal response~~
+	+ ~~Error responses detailed on api page~~
 	+ Mutated responses
 + Add unit tests for parsing & handling the basic response
 + Add support to writing the network response to disk

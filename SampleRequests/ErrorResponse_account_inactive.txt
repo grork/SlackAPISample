@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Content-Security-Policy: referrer no-referrer;
+Content-Type: application/json; charset=utf-8
+Date: Sat, 05 Dec 2015 19:33:19 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Content-Length: 35
+Connection: keep-alive
+
+{"ok":false,"error":"account_inactive"}

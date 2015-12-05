@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Content-Security-Policy: referrer no-referrer;
+Content-Type: application/json; charset=utf-8
+Date: Sat, 05 Dec 2015 19:32:43 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-Accepted-OAuth-Scopes: users:read
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Content-Length: 33
+Connection: keep-alive
+
+{"ok":false,"error":"not_authed"}
