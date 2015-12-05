@@ -6,13 +6,15 @@ Strike through = Done
 
 ## Getting Setup ##
 + ~~Create Git Repo on TFS for shared work~~
-	+ Check in TODO from here
-	+ REDACTED
-+ Add Empty Project
-+ Add Empty Test Project
+	+ ~~Check in TODO from here~~
+	+ ~~REDACTED~~
++ ~~Add Empty Project~~
++ ~~Add Empty Test Project~~
++ Add Shared Items project for easier unit testing
 + ~~Spend time understanding the auth / calling API~~
 	+ ~~CURL it up yo'~~
 	+ ~~Check support for 'stuff didn't change since last request'~~ _(No, no caching)_
++ Setup Fiddler, install certs
 
 ## Basic Data Access ##
 + Add network request that outputs to the main content area on success and failure
