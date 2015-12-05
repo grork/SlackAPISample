@@ -10,7 +10,7 @@ Strike through = Done
 	+ ~~REDACTED~~
 + ~~Add Empty Project~~
 + ~~Add Empty Test Project~~
-+ Add Shared Items project for easier unit testing
++ ~~Add Shared Items project for easier unit testing of non-ui code~~
 + ~~Spend time understanding the auth / calling API~~
 	+ ~~CURL it up yo'~~
 	+ ~~Check support for 'stuff didn't change since last request'~~ _(No, no caching)_
@@ -21,7 +21,7 @@ Strike through = Done
 + ~~Add sample response file to repo~~
 	+ ~~Normal response~~
 	+ ~~Error responses detailed on api page~~
-	+ Mutated responses
+	+ ~~Mutated responses~~
 + Add unit tests for parsing & handling the basic response
 + Add support to writing the network response to disk
 + Add loading data from disk if present & offline (go to network if online)

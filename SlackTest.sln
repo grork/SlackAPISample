@@ -12,7 +12,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedCode", "SharedCode\SharedCode.vcxitems", "{45D41ACC-2C3C-43D2-BC10-02AA73FFC7C7}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedCode\SharedCode.vcxitems*{70b57d25-86ae-4c6f-8aad-598a94b4d0dc}*SharedItemsImports = 4
+		SharedCode\SharedCode.vcxitems*{4f1b72c1-8b6e-4788-a874-167610d03512}*SharedItemsImports = 4
+		SharedCode\SharedCode.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
