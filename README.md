@@ -47,6 +47,13 @@ Strike through = Done
 + Use page/Control for user page as detail for master-detail
 + Make layout look nice following 4px grid
 
+## Possible Improvements ##
++ Use SQLite from Windows 1511 SDK for SQL Lite to store individual records & data
+	+ Allows faster start up
+	+ Creates case where only the IDs + viewport's data items are loaded
+		+ Using Skinny + hydrate model
+	+ Data probably isn't large enough right now to justify doing
+		+ Might be fun though! :)
 
 #### Reference ####
 API Doc: https://api.slack.com/methods/users.list
