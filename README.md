@@ -1,32 +1,53 @@
-# You've added your first ReadMe file!
-A README.md file is intended to quickly orient readers to what your project can do.  New to Markdown? [Learn more](http://go.microsoft.com/fwlink/p/?LinkId=524306&clcid=0x409)
+This is a sample project REDACTED
 
-## Edit this ReadMe and commit your change to a topic branch
-In Git, branches are cheap.  You should use them whenever you're making changes to your repository.  Edit this file by clicking on the edit icon.
+# TODO #
 
-Then make some changes to this ReadMe file.
+Strike through = Done
 
-> Make some **edits** to _this_ blockquote
+## Getting Setup ##
++ ~~Create Git Repo on TFS for shared work~~
+	+ Check in TODO from here
+	+ REDACTED
++ Add Empty Project
++ Add Empty Test Project
++ ~~Spend time understanding the auth / calling API~~
+	+ ~~CURL it up yo'~~
+	+ ~~Check support for 'stuff didn't change since last request'~~ _(No, no caching)_
 
-When you are done, click the dropdown arrow next to the save button - that will allow you to commit your changes to a new branch.
+## Basic Data Access ##
++ Add network request that outputs to the main content area on success and failure
++ Add sample response file to repo
+	+ Normal response
+	+ Error responses from api page
+	+ Mutated responses
++ Add unit tests for parsing & handling the basic response
++ Add support to writing the network response to disk
++ Add loading data from disk if present & offline (go to network if online)
+	+ Mock offline network status check?
+	+ Should be checking more for failure, rather than being online?
++ Add Object model representing the items
+	+ Deserialize in some form from the JSON to the Object models
++ Add support for merging any changes in a network request to offer change notification (Data already written to disk, so no need to write "diffs").
++ Should this be done via an ID broadcast that is "no, you should probably load this item directly again"
+	+ Is this just making the thing too damn complicated?
 
-## Create a pull request to contribute your changes back into master
-Pull requests are the way to move changes from a topic branch back into the master branch.
+## UI ##
++ Add listview, displays basic data through {binding}
++ Create a user control for the list item
++ Update listview to use CCC + add call back into custom control
++ Add invoke handler to navigate to a new user detail page
++ Add back requested support to navigate back
++ Add new basic layout for user details on the new page
++ Understand image size urls
+	+ Add to both list item, and details page
+	+ Custom Image loading control to provide nice transition from blank to full?
++ Add loading spinner to startup if > 150ms of load time
++ Add support for splitting the view in full screen mode
+	+ Secondary frame, or primary frame that overlays the listview?
++ Use page/Control for user page as detail for master-detail
++ Make layout look nice following 4px grid
 
-Click on the **Pull Requests** page in the **CODE** hub, then click "New Pull Request" to create a new pull request from your topic branch to the master branch.
 
-When you are done adding details, click "Create Pull request". Once a pull request is sent, reviewers can see your changes, recommend modifications, or even push follow-up commits.
-
-First time creating a pull request?  [Learn more](http://go.microsoft.com/fwlink/?LinkId=533211&clcid=0x409)
-
-### Congratulations! You've completed the grand tour of the CODE hub!
-
-# Next steps
-
-If you haven't done so yet:
-* [Install Visual Studio](http://go.microsoft.com/fwlink/?LinkId=309297&clcid=0x409&slcid=0x409)
-* [Install Git](http://git-scm.com/downloads)
-
-Then clone this repo to your local machine to get started with your own project.
-
-Happy coding!
+#### Reference ####
+API Doc: https://api.slack.com/methods/users.list
+API Token: REDACTED
