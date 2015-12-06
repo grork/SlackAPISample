@@ -40,8 +40,24 @@ Uri^ UserListRequest::_GetRequestUrl()
 task<UserListResult^> UserListRequest::GetResultAsync()
 {
     auto httpClient = ref new HttpClient();
-    auto resultTask = create_task(httpClient->GetAsync(this->_GetRequestUrl())).then([](HttpResponseMessage^ response) {
-        if (!response->IsSuccessStatusCode)
+    auto resultTask = create_task(httpClient->GetAsync(this->_GetRequestUrl())).then([](task<HttpResponseMessage^> completed_task) {
+        // This handles the response as a task, rather than the raw response, because
+        // when offline (e.g. no internet) this continuation will barf. Note that offline
+        // is merely one of the ways it could barf; generally speaking "real network issue"
+        // covers these.
+        HttpResponseMessage^ response;
+        bool wasSuccessful = false;
+        try
+        {
+            response = completed_task.get();
+            wasSuccessful = response->IsSuccessStatusCode;
+        }
+        catch (...)
+        {
+            wasSuccessful = false;
+        }
+
+        if (!wasSuccessful)
         {
             return ref new UserListResult(ApiResultStatus::HttpError);
         }

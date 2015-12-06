@@ -14,5 +14,13 @@ namespace Client
 
 	internal:
 		App();
+
+        static property Platform::String^ SlackApiToken
+        {
+            Platform::String^ get()
+            {
+                return Platform::StringReference(L"REDACTED");
+            }
+        }
 	};
 }

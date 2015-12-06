@@ -17,7 +17,7 @@ Strike through = Done
 + ~~Setup Fiddler, install certs~~
 
 ## Basic Data Access ##
-+ Add network request that outputs to the main content area on success and failure
++ ~~Add network request that outputs to the main content area on success and failure~~
 + ~~Add sample response file to repo~~
 	+ ~~Normal response~~
 	+ ~~Error responses detailed on api page~~
@@ -33,6 +33,7 @@ Strike through = Done
 + Add support for merging any changes in a network request to offer change notification (Data already written to disk, so no need to write "diffs").
 + Should this be done via an ID broadcast that is "no, you should probably load this item directly again"
 	+ Is this just making the thing too damn complicated?
++ Handle returning online when had started offline?
 
 ## UI ##
 + Add listview, displays basic data through {binding}

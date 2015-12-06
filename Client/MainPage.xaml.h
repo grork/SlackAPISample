@@ -6,6 +6,7 @@
 #pragma once
 
 #include "MainPage.g.h"
+#include "UserListRequest.h"
 
 namespace Client
 {
@@ -17,5 +18,8 @@ namespace Client
 	public:
 		MainPage();
 
-	};
+    private:
+        concurrency::task<Requests::UserListResult^> _userList;
+        void Page_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+    };
 }

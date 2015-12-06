@@ -38,5 +38,15 @@ namespace Tests
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
             Assert::IsTrue(Requests::ApiResultStatus::HttpError == result->ApiStatus, L"Incorrect Api Status");
         }
+
+        TEST_METHOD(RequestReportsHttpErrorWhenBadHostIsUsed)
+        {
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
+            Assert::IsTrue(Requests::ApiResultStatus::HttpError == result->ApiStatus, L"Incorrect Api Status");
+        }
     };
 }

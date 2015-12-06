@@ -4,16 +4,31 @@
 
 using namespace Client;
 
+using namespace concurrency;
 using namespace Platform;
+using namespace Requests;
+using namespace Windows::UI::Xaml;
 
 MainPage::MainPage()
 {
 	InitializeComponent();
 
-    auto req = ref new Requests::UserListRequest("");
-    if (req == nullptr)
+    auto request = ref new UserListRequest(App::SlackApiToken);
+    this->_userList = request->GetResultAsync();
+}
+
+void MainPage::Page_Loaded(Object^ sender, RoutedEventArgs^ e)
+{
+    MainPage^ self = this;
+    this->_userList.then([self](UserListResult^ result)
     {
-        auto dialog = ref new Windows::UI::Popups::MessageDialog("No request");
-        dialog->ShowAsync();
-    }
+        if (result->IsSuccessful)
+        {
+            self->MessageBlock->Text = L"Successfully Loaded!";
+        }
+        else
+        {
+            self->MessageBlock->Text = L"Failed to load!";
+        }
+    });
 }
