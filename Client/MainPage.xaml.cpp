@@ -4,11 +4,13 @@
 
 using namespace Client;
 
+using namespace Platform;
+
 MainPage::MainPage()
 {
 	InitializeComponent();
 
-    auto req = ref new Requests::UserListRequest();
+    auto req = ref new Requests::UserListRequest("");
     if (req == nullptr)
     {
         auto dialog = ref new Windows::UI::Popups::MessageDialog("No request");

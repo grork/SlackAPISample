@@ -22,9 +22,10 @@ Strike through = Done
 	+ ~~Normal response~~
 	+ ~~Error responses detailed on api page~~
 	+ ~~Mutated responses~~
-+ Add unit tests for parsing & handling the basic response
++ ~~Add unit tests for parsing & handling the basic response~~
 + Add support to writing the network response to disk
 + Add loading data from disk if present & offline (go to network if online)
+	+ Refactor loading to skip real network requests when using testing
 	+ Mock offline network status check?
 	+ Should be checking more for failure, rather than being online?
 + Add Object model representing the items
