@@ -6,6 +6,7 @@
 #pragma once
 
 #include "MainPage.g.h"
+#include "SlackUser.h"
 #include "UserListRequest.h"
 
 namespace Client

@@ -7,9 +7,9 @@ namespace SlackDataObjects
     /// Rich class representing the basic user object from the Slack service
     /// Details: https://api.slack.com/types/user
     /// </summary>
-    ref class SlackUser
+    public ref class SlackUser sealed
     {
-    internal:
+    public:
         property Platform::String^ Id { Platform::String^ get(); }
         property Platform::String^ RealName { Platform::String^ get(); }
         property Platform::String^ Name { Platform::String^ get(); }
@@ -18,13 +18,12 @@ namespace SlackDataObjects
         /// <summary>
         /// Ordered list of images -- from the smallest available to the largest
         /// </summary>
-        property UrlList^ Images { UrlList^ get(); }
-
-        // Extended properties -- may not be present
+        property UrlList^ Images { UrlList^ get(); }        // Extended properties -- may not be present
         property Platform::String^ Email { Platform::String^ get(); }
         property Platform::String^ TimeZoneName { Platform::String^ get(); }
         property Windows::UI::Color Color { Windows::UI::Color get(); }
 
+    internal:
         /// <summary>
         /// Parses a user object from supplied data. Parses both "core"
         /// and, if present, extended data

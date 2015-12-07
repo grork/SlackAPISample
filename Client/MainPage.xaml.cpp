@@ -22,30 +22,6 @@ void MainPage::Page_Loaded(Object^ sender, RoutedEventArgs^ e)
     MainPage^ self = this;
     this->_userList.then([self](UserListResult^ result)
     {
-        String^ message = "";
-        if (result->IsSuccessful)
-        {
-            if (result->WasSatisfiedFromCache)
-            {
-                message = L"Successful from Cache!";
-            }
-            else
-            {
-                message = L"Successful!";
-            }
-        }
-        else
-        {
-            if (result->HasResult && result->WasSatisfiedFromCache)
-            {
-                message = "Loaded From cache";
-            }
-            else
-            {
-                message = L"Failed to load!";
-            }
-        }
-
-        self->MessageBlock->Text = message;
+        self->UserItemsControl->ItemsSource = result->Result;
     }, task_continuation_context::use_current());
 }
