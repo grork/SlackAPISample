@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "SlackUser.h"
 #include "UserDetailPage.g.h"
 
 namespace Client
@@ -17,5 +18,8 @@ namespace Client
 	{
 	public:
 		UserDetailPage();
+
+    protected:
+        virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 	};
 }

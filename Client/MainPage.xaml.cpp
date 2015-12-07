@@ -70,10 +70,8 @@ void MainPage::DoubleData_Click(Object^, RoutedEventArgs^)
     }
 }
 
-
 void MainPage::UsersList_ItemClick(Object^ sender, ItemClickEventArgs^ e)
 {
     Controls::Frame^ frame = dynamic_cast<Controls::Frame^>(Window::Current->Content);
     frame->Navigate(TypeName(UserDetailPage::typeid), e->ClickedItem);
-
 }
