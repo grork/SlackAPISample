@@ -178,6 +178,18 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="CorruptPayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="AccountInactivePayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="InvalidAuthPayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="NotAuthedPayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="SuccessfulPayload.json">
       <FileType>Document</FileType>
       <DeploymentContent>true</DeploymentContent>

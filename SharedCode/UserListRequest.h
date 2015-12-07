@@ -3,6 +3,9 @@
 #include <pch.h>
 
 namespace Requests {
+
+    ref class UserListRequest;
+
     /// <summary>
     /// Represents the different "expected" categories of errors we might get back
     /// from calling the API.
@@ -11,10 +14,12 @@ namespace Requests {
     {
         None,
         Success,
+        BadPayload,
         NotAuthed,
         InvalidAuth,
         AccountInactive,
         HttpError,
+        Unknown,
     };
 
     /// <summary>
@@ -25,20 +30,17 @@ namespace Requests {
     /// </summary>
     ref class UserListResult sealed
     {
+        friend ref class UserListRequest;
     internal:
-        /// <summary>
-        /// Constructs a "successful" result w/ the supplied data
-        /// </summary>
-        UserListResult(Platform::String^ result);
-
         /// <summary>
         /// Constructs a result with the explicitly supplied Api status
         /// </summary>
-        UserListResult(ApiResultStatus apiStatus, Platform::String^ result);
+        UserListResult(ApiResultStatus apiStatus, Platform::String^ result, bool wasSatisfiedFromCache = false);
 
         property ApiResultStatus ApiStatus { ApiResultStatus get(); }
         property bool IsSuccessful { bool get(); }
         property bool HasResult { bool get(); }
+        property bool WasSatisfiedFromCache { bool get(); }
 
         /// <summary>
         /// Returns the data retrieved by this request.
@@ -50,6 +52,7 @@ namespace Requests {
     private:
         ApiResultStatus _apiStatusCode;
         Platform::String^ _data;
+        bool _wasSatisifiedFromCache = false;
     };
 
     /// <summary>
@@ -75,6 +78,7 @@ namespace Requests {
         Windows::Foundation::Uri^ _GetRequestUrl();
         void _WriteResponseToDisk(Windows::Web::Http::IHttpContent^ content);
         concurrency::task<Platform::String^> _LoadResponseFromDisk();
+        static ApiResultStatus _GetResultStatusFromJson(Windows::Data::Json::JsonObject^ json);
 
         static const wchar_t* BASE_URL;
         static const wchar_t* LOCAL_CACHE_FILE_NAME;

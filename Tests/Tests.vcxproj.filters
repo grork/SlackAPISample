@@ -58,5 +58,17 @@
     <None Include="SuccessfulPayload.json">
       <Filter>SampleRequests</Filter>
     </None>
+    <None Include="CorruptPayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
+    <None Include="NotAuthedPayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
+    <None Include="AccountInactivePayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
+    <None Include="InvalidAuthPayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -17,6 +17,20 @@ namespace Tests
     {
     public:
 
+        void CopyTestCacheResultToLocalCache(String^ sourceFileName)
+        {
+            // We need to "Fake out" the response by placing something known in the
+            // internal cache for the request. Slightly "inside the beltway" w.r.t.
+            // the internal workings, but not crazy
+            auto packageFolder = Windows::ApplicationModel::Package::Current->InstalledLocation;
+            auto moveResponseFileToCache = create_task(packageFolder->GetFileAsync(sourceFileName)).then([](StorageFile^ file)
+            {
+                return file->CopyAsync(ApplicationData::Current->LocalCacheFolder, LOCAL_CACHE_FILE_NAME);
+            });
+
+            moveResponseFileToCache.wait();
+        }
+
         TEST_METHOD_INITIALIZE(InitTests)
         {
             StorageFolder^ cacheFolder = ApplicationData::Current->LocalCacheFolder;
@@ -48,6 +62,7 @@ namespace Tests
             Assert::IsTrue(result->IsSuccessful, L"Request was not successful");
             Assert::IsTrue(result->HasResult, L"Expected data");
             Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data to be returned");
+            Assert::IsFalse(result->WasSatisfiedFromCache, L"Should NOT have been satisified from on disk cache");
         }
 
         TEST_METHOD(RequestReportsHttpErrorWhenBadUrlUsed)
@@ -74,16 +89,23 @@ namespace Tests
 
         TEST_METHOD(RequestLoadsCachedResponseWhenFailing)
         {
-            // We need to "Fake out" the response by placing something known in the
-            // internal cache for the request. Slightly "inside the beltway" w.r.t.
-            // the internal workings, but not crazy
-            auto packageFolder = Windows::ApplicationModel::Package::Current->InstalledLocation;
-            auto moveResponseFileToCache = create_task(packageFolder->GetFileAsync("SuccessfulPayload.json")).then([](StorageFile^ file)
-            {
-                return file->CopyAsync(ApplicationData::Current->LocalCacheFolder, LOCAL_CACHE_FILE_NAME);
-            });
+            this->CopyTestCacheResultToLocalCache("SuccessfulPayload.json");
 
-            moveResponseFileToCache.wait();
+            // This uses a fake URL so it fails and loads from disk
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsTrue(result->IsSuccessful, L"Request should have been successful");
+            Assert::IsTrue(result->HasResult, L"Expect data");
+            Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data");
+            Assert::IsTrue(Requests::ApiResultStatus::Success == result->ApiStatus, L"Incorrect Api Status");
+            Assert::IsTrue(result->WasSatisfiedFromCache, L"Should have been satisified from on disk cache");
+        }
+
+        TEST_METHOD(RequestIndicatesCorrectStatusWhenParsingBadPayload)
+        {
+            this->CopyTestCacheResultToLocalCache("CorruptPayload.json");
 
             // This uses a fake URL so it fails and loads from disk
             auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
@@ -91,9 +113,54 @@ namespace Tests
             auto result = resultOperation.get();
 
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
-            Assert::IsTrue(result->HasResult, L"Didn't expect data");
-            Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data");
-            Assert::IsTrue(Requests::ApiResultStatus::HttpError == result->ApiStatus, L"Incorrect Api Status");
+            Assert::IsFalse(result->HasResult, L"Didn't expect data");
+            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsTrue(Requests::ApiResultStatus::BadPayload == result->ApiStatus, L"Incorrect Api Status");
+        }
+
+        TEST_METHOD(RequestParsesNotAuthedResponse)
+        {
+            this->CopyTestCacheResultToLocalCache("NotAuthedPayload.json");
+
+            // This uses a fake URL so it fails and loads from disk
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
+            Assert::IsFalse(result->HasResult, L"Didn't expect data");
+            Assert::IsTrue(result->Result->IsEmpty(), L"Expected some data");
+            Assert::IsTrue(Requests::ApiResultStatus::NotAuthed == result->ApiStatus, L"Incorrect Api Status");
+        }
+
+        TEST_METHOD(RequestParsesInvalidAuthResponse)
+        {
+            this->CopyTestCacheResultToLocalCache("InvalidAuthPayload.json");
+
+            // This uses a fake URL so it fails and loads from disk
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
+            Assert::IsFalse(result->HasResult, L"Didn't expect data");
+            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsTrue(Requests::ApiResultStatus::InvalidAuth == result->ApiStatus, L"Incorrect Api Status");
+        }
+
+        TEST_METHOD(RequestParsesAccountInactiveResponse)
+        {
+            this->CopyTestCacheResultToLocalCache("AccountInactivePayload.json");
+
+            // This uses a fake URL so it fails and loads from disk
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
+            Assert::IsFalse(result->HasResult, L"Didn't expect data");
+            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsTrue(Requests::ApiResultStatus::AccountInactive == result->ApiStatus, L"Incorrect Api Status");
         }
     };
 }

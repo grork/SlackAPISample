@@ -4,6 +4,7 @@
 using namespace concurrency;
 using namespace Platform;
 using namespace Requests;
+using namespace Windows::Data::Json;
 using namespace Windows::Foundation;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
@@ -52,38 +53,95 @@ task<UserListResult^> UserListRequest::GetResultAsync()
         // is merely one of the ways it could barf; generally speaking "real network issue"
         // covers these.
         HttpResponseMessage^ response;
-        bool wasSuccessful = false;
+        bool requestWasSuccessful = false;
         try
         {
             response = completed_task.get();
-            wasSuccessful = response->IsSuccessStatusCode;
+            requestWasSuccessful = response->IsSuccessStatusCode;
         }
         catch (...)
         {
-            wasSuccessful = false;
+            requestWasSuccessful = false;
         }
 
-        if (!wasSuccessful)
+        task<String^> resultRawDataTask;
+        bool loadedDataFromOnDiskCache = false;
+
+        if (!requestWasSuccessful)
         {
             // Try loading the result form disk if we're in an error state to return
-            // any cached data that we might have. Assume that from this path, we're
-            // seeing an actual error on the network stack, rather than from the service
-            return self->_LoadResponseFromDisk().then([self](String^ data)
-            {
-                return ref new UserListResult(ApiResultStatus::HttpError, data);
-            });
+            // any cached data that we might have.
+            resultRawDataTask = self->_LoadResponseFromDisk();
+            loadedDataFromOnDiskCache = true;
+        }
+        else
+        {
+            self->_WriteResponseToDisk(response->Content);
+            resultRawDataTask = create_task(response->Content->ReadAsStringAsync());
         }
 
-        self->_WriteResponseToDisk(response->Content);
-        auto readStringTask = create_task(response->Content->ReadAsStringAsync()).then([](String^ data)
+        auto readStringTask = resultRawDataTask.then([requestWasSuccessful, loadedDataFromOnDiskCache](String^ data)
         {
-            return ref new UserListResult(data);
+            ApiResultStatus apiResult = ApiResultStatus::Success;
+            JsonObject^ parsedData;
+
+            if (!requestWasSuccessful)
+            {
+                apiResult = ApiResultStatus::HttpError;
+            }
+
+            if (!data->IsEmpty())
+            {
+                bool didParse = JsonObject::TryParse(data, &parsedData);
+                if (!didParse)
+                {
+                    apiResult = ApiResultStatus::BadPayload;
+                    data = nullptr;
+                }
+                else
+                {
+                    apiResult = UserListRequest::_GetResultStatusFromJson(parsedData);
+                    if (apiResult != ApiResultStatus::Success)
+                    {
+                        data = nullptr;
+                    }
+                }
+            }
+
+            return ref new UserListResult(apiResult, data, loadedDataFromOnDiskCache);
         });
 
         return readStringTask;
     });
 
     return resultTask;
+}
+
+ApiResultStatus UserListRequest::_GetResultStatusFromJson(JsonObject^ json)
+{
+    bool wasSuccessful = json->GetNamedBoolean(L"ok", false);
+
+    if (wasSuccessful)
+    {
+        return ApiResultStatus::Success;
+    }
+
+    String^ errorData = json->GetNamedString("error");
+
+    if (errorData == StringReference(L"not_authed"))
+    {
+        return ApiResultStatus::NotAuthed;
+    }
+    else if (errorData == StringReference(L"invalid_auth"))
+    {
+        return ApiResultStatus::InvalidAuth;
+    }
+    else if (errorData == StringReference(L"account_inactive"))
+    {
+        return ApiResultStatus::AccountInactive;
+    }
+    
+    return ApiResultStatus::Unknown;
 }
 
 task<String^> UserListRequest::_LoadResponseFromDisk()
@@ -137,11 +195,8 @@ void UserListRequest::_WriteResponseToDisk(IHttpContent^ content)
 
 
 #pragma region UserListResult
-UserListResult::UserListResult(String^ result) : _data(result), _apiStatusCode(ApiResultStatus::Success)
-{ }
-
-UserListResult::UserListResult(ApiResultStatus apiStatus, String^ cachedResult)
-    : _apiStatusCode(apiStatus), _data(cachedResult)
+UserListResult::UserListResult(ApiResultStatus apiStatus, String^ cachedResult, bool wasSatisifiedFromCache)
+    : _apiStatusCode(apiStatus), _data(cachedResult), _wasSatisifiedFromCache(wasSatisifiedFromCache)
 { }
 
 String^ UserListResult::Result::get()
@@ -162,5 +217,10 @@ bool UserListResult::HasResult::get()
 ApiResultStatus UserListResult::ApiStatus::get()
 {
     return this->_apiStatusCode;
+}
+
+bool UserListResult::WasSatisfiedFromCache::get()
+{
+    return this->_wasSatisifiedFromCache;
 }
 #pragma endregion UserListResult
