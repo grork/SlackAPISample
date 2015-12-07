@@ -23,7 +23,8 @@ Strike through = Done
 	+ ~~Error responses detailed on api page~~
 	+ ~~Mutated responses~~
 + ~~Add unit tests for parsing & handling the basic response~~
-+ Add support to writing the network response to disk
++ ~~Add support to writing the network response to disk~~
+	+ Probably should handle URL impact on network cache file
 + Add loading data from disk if present & offline (go to network if online)
 	+ Refactor loading to skip real network requests when using testing
 	+ Mock offline network status check?

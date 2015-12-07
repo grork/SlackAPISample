@@ -72,7 +72,9 @@ namespace Requests {
         Windows::Foundation::Uri^ _urlOverride;
         Platform::String^ _apiToken;
         Windows::Foundation::Uri^ _GetRequestUrl();
+        void _WriteResponseToDisk(Windows::Web::Http::IHttpContent^ content);
 
         static const wchar_t* BASE_URL;
+        static const wchar_t* LOCAL_CACHE_FILE_NAME;
     };
 }

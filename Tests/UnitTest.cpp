@@ -2,9 +2,11 @@
 #include "CppUnitTest.h"
 #include "UserListRequest.h"
 
+using namespace concurrency;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Platform;
 using namespace Windows::Foundation;
+using namespace Windows::Storage;
 
 #define SLACK_API_TOKEN L"REDACTED"
 
@@ -13,6 +15,23 @@ namespace Tests
     TEST_CLASS(RequestTests)
     {
     public:
+
+        TEST_METHOD_INITIALIZE(InitTests)
+        {
+            StorageFolder^ cacheFolder = ApplicationData::Current->LocalCacheFolder;
+            auto fileCleanupTask = create_task(cacheFolder->TryGetItemAsync("slackcache.json")).then([](IStorageItem^ item)
+            {
+                if (item == nullptr)
+                {
+                    return create_task(task_completion_event<void>());
+                }
+                
+                return create_task(item->DeleteAsync());
+            });
+
+            fileCleanupTask.wait();
+        }
+
         TEST_METHOD(CanConstructUserListRequeset)
         {
             auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN);
@@ -26,7 +45,7 @@ namespace Tests
             auto result = resultOperation.get();
 
             Assert::IsTrue(result->IsSuccessful, L"Request was not successful");
-            Assert::AreEqual("TEMPORARY_DATA", result->Result, L"Incorrect data returned");
+            Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data to be returned");
         }
 
         TEST_METHOD(RequestReportsHttpErrorWhenBadUrlUsed)

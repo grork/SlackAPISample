@@ -5,9 +5,12 @@ using namespace concurrency;
 using namespace Platform;
 using namespace Requests;
 using namespace Windows::Foundation;
+using namespace Windows::Storage;
+using namespace Windows::Storage::Streams;
 using namespace Windows::Web::Http;
 
 const wchar_t* UserListRequest::BASE_URL = L"https://slack.com/api/users.list";
+const wchar_t* UserListRequest::LOCAL_CACHE_FILE_NAME = L"slackcache.json";
 
 UserListRequest::UserListRequest(String^ apiToken)
 {
@@ -40,7 +43,10 @@ Uri^ UserListRequest::_GetRequestUrl()
 task<UserListResult^> UserListRequest::GetResultAsync()
 {
     auto httpClient = ref new HttpClient();
-    auto resultTask = create_task(httpClient->GetAsync(this->_GetRequestUrl())).then([](task<HttpResponseMessage^> completed_task) {
+    auto self = this;
+
+    auto resultTask = create_task(httpClient->GetAsync(this->_GetRequestUrl())).then([self](task<HttpResponseMessage^> completed_task)
+    {
         // This handles the response as a task, rather than the raw response, because
         // when offline (e.g. no internet) this continuation will barf. Note that offline
         // is merely one of the ways it could barf; generally speaking "real network issue"
@@ -59,14 +65,47 @@ task<UserListResult^> UserListRequest::GetResultAsync()
 
         if (!wasSuccessful)
         {
-            return ref new UserListResult(ApiResultStatus::HttpError);
+            return task_from_result(ref new UserListResult(ApiResultStatus::HttpError));
         }
 
-        auto result = ref new UserListResult(L"TEMPORARY_DATA");
-        return result;
+        self->_WriteResponseToDisk(response->Content);
+        auto readStringTask = create_task(response->Content->ReadAsStringAsync()).then([](String^ data)
+        {
+            return ref new UserListResult(data);
+        });
+
+        return readStringTask;
     });
 
     return resultTask;
+}
+
+void UserListRequest::_WriteResponseToDisk(IHttpContent^ content)
+{
+    StorageFolder^ localAppData = ApplicationData::Current->LocalCacheFolder;
+    auto createFile = localAppData->CreateFileAsync(StringReference(UserListRequest::LOCAL_CACHE_FILE_NAME),
+                                                                   CreationCollisionOption::ReplaceExisting);
+
+    create_task(createFile).then([](StorageFile^ file)
+    {
+        return create_task(file->OpenAsync(FileAccessMode::ReadWrite));
+    }).then([content](IOutputStream^ outputStream)
+    {
+        return create_task(content->WriteToStreamAsync(outputStream));
+    }).then([](task<unsigned long long> writeComplete)
+    {
+        try
+        {
+            writeComplete.wait();
+        }
+        catch (...)
+        {
+            __debugbreak();
+            OutputDebugString(L"Failed to to write data to disk; no offline data will be available");
+        }
+
+        OutputDebugString(L"Written all data to disk");
+    });
 }
 
 
