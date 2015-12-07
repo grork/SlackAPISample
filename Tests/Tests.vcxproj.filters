@@ -80,5 +80,8 @@
     <None Include="MinimalUser.json">
       <Filter>SampleUsers</Filter>
     </None>
+    <None Include="SuccessfulButMissingMembersPayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
   </ItemGroup>
 </Project>

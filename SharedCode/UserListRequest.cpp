@@ -1,11 +1,16 @@
 #include "pch.h"
+#include "SlackUser.h"
 #include "UserListRequest.h"
+
+using namespace Requests;
 
 using namespace concurrency;
 using namespace Platform;
-using namespace Requests;
+using namespace Platform::Collections;
+using namespace SlackDataObjects;
 using namespace Windows::Data::Json;
 using namespace Windows::Foundation;
+using namespace Windows::Foundation::Collections;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
 using namespace Windows::Web::Http;
@@ -84,6 +89,7 @@ task<UserListResult^> UserListRequest::GetResultAsync()
         {
             ApiResultStatus apiResult = ApiResultStatus::Success;
             JsonObject^ parsedData;
+            IVector<SlackUser^>^ users;
 
             if (!requestWasSuccessful)
             {
@@ -96,19 +102,23 @@ task<UserListResult^> UserListRequest::GetResultAsync()
                 if (!didParse)
                 {
                     apiResult = ApiResultStatus::BadPayload;
-                    data = nullptr;
+                    users = nullptr;
                 }
                 else
                 {
                     apiResult = UserListRequest::_GetResultStatusFromJson(parsedData);
                     if (apiResult != ApiResultStatus::Success)
                     {
-                        data = nullptr;
+                        users = nullptr;
+                    }
+                    else
+                    {
+                        users = UserListRequest::_GetListOfUsersFromJson(parsedData);
                     }
                 }
             }
 
-            return ref new UserListResult(apiResult, data, loadedDataFromOnDiskCache);
+            return ref new UserListResult(apiResult, users, loadedDataFromOnDiskCache);
         });
 
         return readStringTask;
@@ -117,13 +127,35 @@ task<UserListResult^> UserListRequest::GetResultAsync()
     return resultTask;
 }
 
+
+IVector<SlackUser^>^ UserListRequest::_GetListOfUsersFromJson(JsonObject^ json)
+{
+    JsonArray^ jsonMembers = json->GetNamedArray("members");
+    IVector<SlackUser^>^ members = ref new Vector<SlackUser^>();
+    for (auto member : jsonMembers)
+    {
+        members->Append(SlackUser::FromJson(member->GetObject()));
+    }
+
+    return members;
+}
+
 ApiResultStatus UserListRequest::_GetResultStatusFromJson(JsonObject^ json)
 {
     bool wasSuccessful = json->GetNamedBoolean(L"ok", false);
 
     if (wasSuccessful)
     {
-        return ApiResultStatus::Success;
+        if (json->HasKey("members"))
+        {
+            return ApiResultStatus::Success;
+        }
+        else
+        {
+            // if we had OK, but had no members key, something
+            // is definiately awry.
+            return ApiResultStatus::BadPayload;
+        }
     }
 
     String^ errorData = json->GetNamedString("error");
@@ -195,11 +227,11 @@ void UserListRequest::_WriteResponseToDisk(IHttpContent^ content)
 
 
 #pragma region UserListResult
-UserListResult::UserListResult(ApiResultStatus apiStatus, String^ cachedResult, bool wasSatisifiedFromCache)
-    : _apiStatusCode(apiStatus), _data(cachedResult), _wasSatisifiedFromCache(wasSatisifiedFromCache)
+UserListResult::UserListResult(ApiResultStatus apiStatus, SlackUsers^ result, bool wasSatisifiedFromCache)
+    : _apiStatusCode(apiStatus), _data(result), _wasSatisifiedFromCache(wasSatisifiedFromCache)
 { }
 
-String^ UserListResult::Result::get()
+SlackUsers^ UserListResult::Result::get()
 {
     return this->_data;
 }
@@ -211,7 +243,7 @@ bool UserListResult::IsSuccessful::get()
 
 bool UserListResult::HasResult::get()
 {
-    return !this->_data->IsEmpty();
+    return (this->_data != nullptr && this->_data->Size > 0);
 }
 
 ApiResultStatus UserListResult::ApiStatus::get()

@@ -61,7 +61,7 @@ namespace Tests
 
             Assert::IsTrue(result->IsSuccessful, L"Request was not successful");
             Assert::IsTrue(result->HasResult, L"Expected data");
-            Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data to be returned");
+            Assert::IsTrue(result->Result->Size == 7, L"Incorrect amount of data returned");
             Assert::IsFalse(result->WasSatisfiedFromCache, L"Should NOT have been satisified from on disk cache");
         }
 
@@ -98,7 +98,7 @@ namespace Tests
 
             Assert::IsTrue(result->IsSuccessful, L"Request should have been successful");
             Assert::IsTrue(result->HasResult, L"Expect data");
-            Assert::IsFalse(result->Result->IsEmpty(), L"Expected some data");
+            Assert::IsTrue(result->Result->Size == 7, L"Incorrect Data Amount");
             Assert::IsTrue(Requests::ApiResultStatus::Success == result->ApiStatus, L"Incorrect Api Status");
             Assert::IsTrue(result->WasSatisfiedFromCache, L"Should have been satisified from on disk cache");
         }
@@ -114,7 +114,22 @@ namespace Tests
 
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
             Assert::IsFalse(result->HasResult, L"Didn't expect data");
-            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsNull(result->Result, L"Didn't expect data");
+            Assert::IsTrue(Requests::ApiResultStatus::BadPayload == result->ApiStatus, L"Incorrect Api Status");
+        }
+
+        TEST_METHOD(RequestIndicatesBadPayloadIfMissingMembersSection)
+        {
+            this->CopyTestCacheResultToLocalCache("SuccessfulButMissingMembersPayload.json");
+
+            // This uses a fake URL so it fails and loads from disk
+            auto req = ref new Requests::UserListRequest(SLACK_API_TOKEN, ref new Uri("https://a/methods/NOT_REAL"));
+            auto resultOperation = req->GetResultAsync();
+            auto result = resultOperation.get();
+
+            Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
+            Assert::IsFalse(result->HasResult, L"Didn't expect data");
+            Assert::IsNull(result->Result, L"Didn't expect data");
             Assert::IsTrue(Requests::ApiResultStatus::BadPayload == result->ApiStatus, L"Incorrect Api Status");
         }
 
@@ -129,7 +144,7 @@ namespace Tests
 
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
             Assert::IsFalse(result->HasResult, L"Didn't expect data");
-            Assert::IsTrue(result->Result->IsEmpty(), L"Expected some data");
+            Assert::IsNull(result->Result, L"Didn't expect data");
             Assert::IsTrue(Requests::ApiResultStatus::NotAuthed == result->ApiStatus, L"Incorrect Api Status");
         }
 
@@ -144,7 +159,7 @@ namespace Tests
 
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
             Assert::IsFalse(result->HasResult, L"Didn't expect data");
-            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsNull(result->Result, L"Didn't expect data");
             Assert::IsTrue(Requests::ApiResultStatus::InvalidAuth == result->ApiStatus, L"Incorrect Api Status");
         }
 
@@ -159,7 +174,7 @@ namespace Tests
 
             Assert::IsFalse(result->IsSuccessful, L"Request should not have been successful");
             Assert::IsFalse(result->HasResult, L"Didn't expect data");
-            Assert::IsTrue(result->Result->IsEmpty(), L"Didn't expect data");
+            Assert::IsNull(result->Result, L"Didn't expect data");
             Assert::IsTrue(Requests::ApiResultStatus::AccountInactive == result->ApiStatus, L"Incorrect Api Status");
         }
     };

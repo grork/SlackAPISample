@@ -196,6 +196,9 @@
     <None Include="SampleSlackUser.json">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="SuccessfulButMissingMembersPayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="SuccessfulPayload.json">
       <FileType>Document</FileType>
       <DeploymentContent>true</DeploymentContent>

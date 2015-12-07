@@ -1,10 +1,12 @@
 #pragma once
 
 #include <pch.h>
+#include <SlackUser.h>
 
 namespace Requests {
 
     ref class UserListRequest;
+    typedef Windows::Foundation::Collections::IVector<SlackDataObjects::SlackUser^> SlackUsers;
 
     /// <summary>
     /// Represents the different "expected" categories of errors we might get back
@@ -35,7 +37,7 @@ namespace Requests {
         /// <summary>
         /// Constructs a result with the explicitly supplied Api status
         /// </summary>
-        UserListResult(ApiResultStatus apiStatus, Platform::String^ result, bool wasSatisfiedFromCache = false);
+        UserListResult(ApiResultStatus apiStatus, SlackUsers^ users, bool wasSatisfiedFromCache = false);
 
         property ApiResultStatus ApiStatus { ApiResultStatus get(); }
         property bool IsSuccessful { bool get(); }
@@ -47,11 +49,11 @@ namespace Requests {
         ///
         /// If the result was not successful, this will throw an exception
         /// </summary>
-        property Platform::String^ Result { Platform::String^ get(); }
+        property SlackUsers^ Result { SlackUsers^ get(); }
 
     private:
         ApiResultStatus _apiStatusCode;
-        Platform::String^ _data;
+        SlackUsers^ _data;
         bool _wasSatisifiedFromCache = false;
     };
 
@@ -80,6 +82,7 @@ namespace Requests {
         void _WriteResponseToDisk(Windows::Web::Http::IHttpContent^ content);
         concurrency::task<Platform::String^> _LoadResponseFromDisk();
         static ApiResultStatus _GetResultStatusFromJson(Windows::Data::Json::JsonObject^ json);
+        static SlackUsers^ _GetListOfUsersFromJson(Windows::Data::Json::JsonObject^ json);
 
         static const wchar_t* BASE_URL;
         static const wchar_t* LOCAL_CACHE_FILE_NAME;
