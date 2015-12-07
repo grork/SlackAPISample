@@ -57,6 +57,7 @@ namespace Requests {
 
     /// <summary>
     /// Requests the users from Slack using the supplied API Key
+    /// Details: https://api.slack.com/methods/users.list
     /// </summary>
     ref class UserListRequest sealed
     {
