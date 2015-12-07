@@ -41,8 +41,8 @@ Strike through = Done
 + ~~Add listview, displays basic data through {binding}~~
 + ~~Create a user control for the list item~~
 + ~~Update listview to use CCC + add call back into custom control~~
-+ Add invoke handler to navigate to a new user detail page
-+ Add back requested support to navigate back
++ ~~Add invoke handler to navigate to a new user detail page~~
++ ~~Add back requested support to navigate back~~
 + Add new basic layout for user details on the new page
 + ~~Understand image size urls~~
 	+ ~~Add to both list item~~, and details page
