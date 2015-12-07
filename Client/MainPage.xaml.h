@@ -6,7 +6,7 @@
 #pragma once
 
 #include "MainPage.g.h"
-#include "SlackUser.h"
+#include "SlackUserListItem.xaml.h"
 #include "UserListRequest.h"
 
 namespace Client
@@ -20,7 +20,9 @@ namespace Client
 		MainPage();
 
     private:
-        concurrency::task<Requests::UserListResult^> _userList;
+        concurrency::task<Requests::UserListResult^> _usersRequest;
         void Page_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void UsersList_ContainerContentChanging(Windows::UI::Xaml::Controls::ListViewBase^ sender, Windows::UI::Xaml::Controls::ContainerContentChangingEventArgs^ args);
+        void DoubleData_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
     };
 }

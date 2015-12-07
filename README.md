@@ -38,20 +38,20 @@ Strike through = Done
 + Handle returning online when had started offline?
 
 ## UI ##
-+ Add listview, displays basic data through {binding}
-+ Create a user control for the list item
-+ Update listview to use CCC + add call back into custom control
++ ~~Add listview, displays basic data through {binding}~~
++ ~~Create a user control for the list item~~
++ ~~Update listview to use CCC + add call back into custom control~~
 + Add invoke handler to navigate to a new user detail page
 + Add back requested support to navigate back
 + Add new basic layout for user details on the new page
-+ Understand image size urls
-	+ Add to both list item, and details page
++ ~~Understand image size urls~~
+	+ ~~Add to both list item~~, and details page
 	+ Custom Image loading control to provide nice transition from blank to full?
 + Add loading spinner to startup if > 150ms of load time
 + Add support for splitting the view in full screen mode
 	+ Secondary frame, or primary frame that overlays the listview?
 + Use page/Control for user page as detail for master-detail
-+ Make layout look nice following 4px grid
++ ~~Make layout look nice following 4px grid~~
 
 ## Possible Improvements ##
 + Use SQLite from Windows 1511 SDK for SQL Lite to store individual records & data

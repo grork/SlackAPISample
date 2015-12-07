@@ -54,6 +54,15 @@ SlackUser^ SlackUser::FromJson(JsonObject^ json)
 
     auto user = ref new SlackUser(id, realName, name, title, images);
 
+    if (profile->HasKey("image_48"))
+    {
+        user->_smallProfileImage = ref new Uri(profile->GetNamedString("image_48"));
+    }
+    else if (profile->HasKey("image_24"))
+    {
+        user->_smallProfileImage = ref new Uri(profile->GetNamedString("image_24"));
+    }
+
     // Now try to parse the *optional* sections. e.g if these are missing
     // it's not the end of the world.
     if (profile->HasKey("email"))
@@ -110,6 +119,11 @@ String^ SlackUser::Title::get()
 UrlList^ SlackUser::Images::get()
 {
     return this->_images;
+}
+
+Uri^ SlackUser::SmallProfileImage::get()
+{
+    return this->_smallProfileImage;
 }
 
 String^ SlackUser::Email::get()

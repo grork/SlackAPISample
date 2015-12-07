@@ -19,6 +19,7 @@ namespace SlackDataObjects
         /// Ordered list of images -- from the smallest available to the largest
         /// </summary>
         property UrlList^ Images { UrlList^ get(); }        // Extended properties -- may not be present
+        property Windows::Foundation::Uri^ SmallProfileImage { Windows::Foundation::Uri^ get(); }
         property Platform::String^ Email { Platform::String^ get(); }
         property Platform::String^ TimeZoneName { Platform::String^ get(); }
         property Windows::UI::Color Color { Windows::UI::Color get(); }
@@ -41,6 +42,7 @@ namespace SlackDataObjects
         Platform::String^ _name;
         Platform::String^ _title;
         UrlList^ _images;
+        Windows::Foundation::Uri^ _smallProfileImage;
         Platform::String^ _email;
         Platform::String^ _timeZoneName;
         Windows::UI::Color _color;

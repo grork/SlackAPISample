@@ -2,7 +2,7 @@
     x:Class="Client.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Client"
+    xmlns:Client="using:Client"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:SlackDataObjects="using:SlackDataObjects"
@@ -10,44 +10,27 @@
     Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ItemsControl x:Name="UserItemsControl">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="SlackDataObjects:SlackUser">
-                    <Grid Height="48"
-                          Margin="8">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="48" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Rectangle Grid.RowSpan="2"
-                                   Width="48"
-                                   Height="48"
-                                   Fill="Red" />
-
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Column="2">
-                            <TextBlock Text="{x:Bind Name}"
-                                       Margin="8,0,4,0"/>
-
-                            <TextBlock Text="&#x25CF;"
-                                       Margin="4,0,4,0"/>
-
-                            <TextBlock Text="{x:Bind RealName}"
-                                       Margin="4,0,8,0"/>
-                        </StackPanel>
-
-                        <TextBlock Grid.Row="2"
-                                   Grid.Column="2"
-                                   Text="{x:Bind Title}"
-                                   Margin="8,0,8,0" />
-                    </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        
+        <ListView x:Name="UsersList"
+                  ContainerContentChanging="UsersList_ContainerContentChanging">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Client:SlackUserListItem />
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Debug Helper to allow more data without needing service to return it -->
+        <Button Grid.Row="2"
+                Height="48"
+                Visibility="Collapsed"
+                HorizontalAlignment="Stretch"
+                Click="DoubleData_Click">
+            Double Data
+        </Button>
     </Grid>
 </Page>
