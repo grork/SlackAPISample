@@ -11,6 +11,9 @@
     <Filter Include="SampleRequests">
       <UniqueIdentifier>{a4869ef9-6645-40db-b5b0-85948cec298b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SampleUsers">
+      <UniqueIdentifier>{a6b8d95b-397b-4479-a340-a239d114e6b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="UnitTestApp.xaml" />
@@ -70,6 +73,12 @@
     </None>
     <None Include="InvalidAuthPayload.json">
       <Filter>SampleRequests</Filter>
+    </None>
+    <None Include="SampleSlackUser.json">
+      <Filter>SampleUsers</Filter>
+    </None>
+    <None Include="MinimalUser.json">
+      <Filter>SampleUsers</Filter>
     </None>
   </ItemGroup>
 </Project>

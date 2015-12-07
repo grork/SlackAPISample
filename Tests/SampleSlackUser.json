@@ -1,0 +1,36 @@
+{
+  "id": "U04LJPD46",
+  "team_id": "T04LJNMNJ",
+  "name": "anthony",
+  "deleted": false,
+  "status": null,
+  "color": "e7392d",
+  "real_name": "Anthony Mathur",
+  "tz": "America\/Los_Angeles",
+  "tz_label": "Pacific Standard Time",
+  "tz_offset": -28800,
+  "profile":
+  {
+    "first_name": "Anthony",
+    "last_name": "Mathur",
+    "title": "Development",
+    "skype": "anthonym",
+    "phone": "123-131-2221",
+    "image_24": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_24.jpg",
+    "image_32": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_32.jpg",
+    "image_48": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_48.jpg",
+    "image_72": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_72.jpg",
+    "image_192": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_192.jpg",
+    "image_original": "https:\/\/avatars.slack-edge.com\/2015-05-01\/4698799712_e1784211d2146055eb02_original.jpg",
+    "real_name": "Anthony Mathur",
+    "real_name_normalized": "Anthony Mathur",
+    "email": "brady+ahmedexercise3@slack-corp.com"
+  },
+  "is_admin": false,
+  "is_owner": false,
+  "is_primary_owner": false,
+  "is_restricted": false,
+  "is_ultra_restricted": false,
+  "is_bot": false,
+  "has_2fa": false
+}

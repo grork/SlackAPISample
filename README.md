@@ -29,12 +29,12 @@ Strike through = Done
 	+ ~~Refactor loading to skip real network requests when using testing~~
 	+ ~~Mock offline network status check?~~ _Didn't need this due to the next item_
 	+ _Yep!_ ~~Should be checking more for failure, rather than being online?~~
-+ Add Object model representing the items
++ ~~Add Object model representing the items~~
 	+ ~~Handle auth-level errors~~
-	+ Deserialize in some form from the JSON to the Object models
-+ Add support for merging any changes in a network request to offer change notification (Data already written to disk, so no need to write "diffs").
-+ Should this be done via an ID broadcast that is "no, you should probably load this item directly again"
-	+ Is this just making the thing too damn complicated?
+	+ ~~Deserialize in some form from the JSON to the Object models~~
++ ~~Add support for merging any changes in a network request to offer change notification (Data already written to disk, so no need to write "diffs").~~
++ ~~Should this be done via an ID broadcast that is "no, you should probably load this item directly again"~~
+	+ _Yes_ ~~Is this just making the thing too damn complicated?~~
 + Handle returning online when had started offline?
 
 ## UI ##

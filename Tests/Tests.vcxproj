@@ -187,7 +187,13 @@
     <None Include="InvalidAuthPayload.json">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="MinimalUser.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="NotAuthedPayload.json">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="SampleSlackUser.json">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="SuccessfulPayload.json">
