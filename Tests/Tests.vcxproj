@@ -178,6 +178,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="SuccessfulPayload.json">
+      <FileType>Document</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Tests_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

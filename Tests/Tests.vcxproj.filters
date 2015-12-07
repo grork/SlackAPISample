@@ -8,6 +8,9 @@
       <UniqueIdentifier>123aaf08-47e6-4b2a-90e4-1d67104e005a</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
+    <Filter Include="SampleRequests">
+      <UniqueIdentifier>{a4869ef9-6645-40db-b5b0-85948cec298b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="UnitTestApp.xaml" />
@@ -52,5 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests_TemporaryKey.pfx" />
+    <None Include="SuccessfulPayload.json">
+      <Filter>SampleRequests</Filter>
+    </None>
   </ItemGroup>
 </Project>

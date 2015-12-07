@@ -65,7 +65,13 @@ task<UserListResult^> UserListRequest::GetResultAsync()
 
         if (!wasSuccessful)
         {
-            return task_from_result(ref new UserListResult(ApiResultStatus::HttpError));
+            // Try loading the result form disk if we're in an error state to return
+            // any cached data that we might have. Assume that from this path, we're
+            // seeing an actual error on the network stack, rather than from the service
+            return self->_LoadResponseFromDisk().then([self](String^ data)
+            {
+                return ref new UserListResult(ApiResultStatus::HttpError, data);
+            });
         }
 
         self->_WriteResponseToDisk(response->Content);
@@ -78,6 +84,27 @@ task<UserListResult^> UserListRequest::GetResultAsync()
     });
 
     return resultTask;
+}
+
+task<String^> UserListRequest::_LoadResponseFromDisk()
+{
+    StorageFolder^ localAppData = ApplicationData::Current->LocalCacheFolder;
+    auto getFile = localAppData->TryGetItemAsync(StringReference(UserListRequest::LOCAL_CACHE_FILE_NAME));
+
+    return create_task(getFile).then([](IStorageItem^ item)
+    {
+        // since we used the API that doesn't barf loudly when the file is missing
+        // we need to check if what was returned was actually a file, because, it
+        // checks for folders AND files. We only really care about files here.
+        StorageFile^ file = dynamic_cast<StorageFile^>(item);
+        if (file == nullptr)
+        {
+            // No file, no result
+            return task_from_result(ref new String(L""));
+        }
+
+        return create_task(FileIO::ReadTextAsync(file));
+    });
 }
 
 void UserListRequest::_WriteResponseToDisk(IHttpContent^ content)
@@ -113,23 +140,23 @@ void UserListRequest::_WriteResponseToDisk(IHttpContent^ content)
 UserListResult::UserListResult(String^ result) : _data(result), _apiStatusCode(ApiResultStatus::Success)
 { }
 
-UserListResult::UserListResult(ApiResultStatus apiStatus)
-    : _apiStatusCode(apiStatus)
+UserListResult::UserListResult(ApiResultStatus apiStatus, String^ cachedResult)
+    : _apiStatusCode(apiStatus), _data(cachedResult)
 { }
 
 String^ UserListResult::Result::get()
 {
-    if (!this->IsSuccessful)
-    {
-        throw ref new InvalidArgumentException(L"Can't get data from result if not successful");
-    }
-
     return this->_data;
 }
 
 bool UserListResult::IsSuccessful::get()
 {
     return (ApiResultStatus::Success == this->ApiStatus);
+}
+
+bool UserListResult::HasResult::get()
+{
+    return !this->_data->IsEmpty();
 }
 
 ApiResultStatus UserListResult::ApiStatus::get()

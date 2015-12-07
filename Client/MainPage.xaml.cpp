@@ -28,7 +28,14 @@ void MainPage::Page_Loaded(Object^ sender, RoutedEventArgs^ e)
         }
         else
         {
-            self->MessageBlock->Text = L"Failed to load!";
+            if (result->HasResult)
+            {
+                self->MessageBlock->Text = "Loaded From cache";
+            }
+            else
+            {
+                self->MessageBlock->Text = L"Failed to load!";
+            }
         }
-    });
+    }, task_continuation_context::use_current());
 }

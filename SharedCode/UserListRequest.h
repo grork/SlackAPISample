@@ -34,10 +34,11 @@ namespace Requests {
         /// <summary>
         /// Constructs a result with the explicitly supplied Api status
         /// </summary>
-        UserListResult(ApiResultStatus apiStatus);
+        UserListResult(ApiResultStatus apiStatus, Platform::String^ result);
 
         property ApiResultStatus ApiStatus { ApiResultStatus get(); }
         property bool IsSuccessful { bool get(); }
+        property bool HasResult { bool get(); }
 
         /// <summary>
         /// Returns the data retrieved by this request.
@@ -73,6 +74,7 @@ namespace Requests {
         Platform::String^ _apiToken;
         Windows::Foundation::Uri^ _GetRequestUrl();
         void _WriteResponseToDisk(Windows::Web::Http::IHttpContent^ content);
+        concurrency::task<Platform::String^> _LoadResponseFromDisk();
 
         static const wchar_t* BASE_URL;
         static const wchar_t* LOCAL_CACHE_FILE_NAME;
