@@ -2,6 +2,7 @@
 #include "MainPage.xaml.h"
 #include "SlackUser.h"
 #include "SlackUserListItem.xaml.h"
+#include "UserDetailPage.xaml.h"
 #include "UserListRequest.h"
 
 using namespace Client;
@@ -13,6 +14,7 @@ using namespace SlackDataObjects;
 using namespace Windows::Foundation;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
+using namespace Windows::UI::Xaml::Interop;
 
 MainPage::MainPage()
 {
@@ -66,4 +68,12 @@ void MainPage::DoubleData_Click(Object^, RoutedEventArgs^)
         auto itemToCopy = users->GetAt(i);
         users->Append(itemToCopy);
     }
+}
+
+
+void MainPage::UsersList_ItemClick(Object^ sender, ItemClickEventArgs^ e)
+{
+    Controls::Frame^ frame = dynamic_cast<Controls::Frame^>(Window::Current->Content);
+    frame->Navigate(TypeName(UserDetailPage::typeid), e->ClickedItem);
+
 }

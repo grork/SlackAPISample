@@ -16,7 +16,9 @@
         </Grid.RowDefinitions>
         
         <ListView x:Name="UsersList"
-                  ContainerContentChanging="UsersList_ContainerContentChanging">
+                  ContainerContentChanging="UsersList_ContainerContentChanging"
+                  ItemClick="UsersList_ItemClick"
+                  IsItemClickEnabled="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Client:SlackUserListItem />

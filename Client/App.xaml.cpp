@@ -12,6 +12,7 @@ using namespace Platform;
 using namespace Windows::ApplicationModel;
 using namespace Windows::ApplicationModel::Activation;
 using namespace Windows::Foundation;
+using namespace Windows::UI::Core;
 using namespace Windows::UI::ViewManagement;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
@@ -41,19 +42,52 @@ void App::OnLaunched(LaunchActivatedEventArgs^ e)
 	// just ensure that the window is active
 	if (rootFrame == nullptr)
 	{
-		// Create a Frame to act as the navigation context and associate it with
-		// a SuspensionManager key
+        // Listen to the global system back button to handle back navigation
+        // This includes the taskbar, window chrome, and hardware back button
+        // on phones
+        SystemNavigationManager^ systemNavigationManager = SystemNavigationManager::GetForCurrentView();
+        systemNavigationManager->BackRequested += ref new EventHandler<BackRequestedEventArgs^>(this, &App::HandleBackRequested);
+
+		// Create a Frame to act as the navigation context
 		rootFrame = ref new Frame();
+        this->_mainFrame = rootFrame;
+        rootFrame->Navigated += ref new NavigatedEventHandler(this, &App::HandleNavigation);
 		rootFrame->Navigate(TypeName(MainPage::typeid), e->Arguments);
 
 		// Place the frame in the current Window
 		Window::Current->Content = rootFrame;
 
-        // the minsize on desktop to mimic that of a small phone to allow better testing
+        // the minsize on desktop to mimic that of a small phone to allow easy testing
         // without having to deploy to the phone/emulator
         ApplicationView::GetForCurrentView()->SetPreferredMinSize(Size(320, 480));
 	}
 
     // Ensure the current window is active
     Window::Current->Activate();
+}
+
+void App::HandleNavigation(Object^, NavigationEventArgs^)
+{
+    SystemNavigationManager^ systemNavigationManager = SystemNavigationManager::GetForCurrentView();
+    if (this->_mainFrame->BackStackDepth > 0)
+    {
+        // if we've got something in our back stack, we'd like the OS to show a back button in the
+        // title bar if it's appropriate
+        systemNavigationManager->AppViewBackButtonVisibility = AppViewBackButtonVisibility::Visible;
+    }
+    else
+    {
+        systemNavigationManager->AppViewBackButtonVisibility = AppViewBackButtonVisibility::Collapsed;
+    }
+}
+
+void App::HandleBackRequested(Object^, BackRequestedEventArgs^ args)
+{
+    if (!this->_mainFrame->CanGoBack)
+    {
+        return;
+    }
+
+    this->_mainFrame->GoBack();
+    args->Handled = true;
 }

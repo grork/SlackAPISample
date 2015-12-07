@@ -12,6 +12,11 @@ namespace Client
 	protected:
 		virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ e) override;
 
+    private:
+        Windows::UI::Xaml::Controls::Frame^ _mainFrame;
+        void HandleNavigation(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ args);
+        void HandleBackRequested(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args);
+
 	internal:
 		App();
 

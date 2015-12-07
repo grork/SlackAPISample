@@ -149,6 +149,9 @@
     <ClInclude Include="SlackUserListItem.xaml.h">
       <DependentUpon>SlackUserListItem.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="UserDetailPage.xaml.h">
+      <DependentUpon>UserDetailPage.xaml</DependentUpon>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -158,6 +161,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SlackUserListItem.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserDetailPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="SlackUserListItem.xaml.cpp">
       <DependentUpon>SlackUserListItem.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="UserDetailPage.xaml.cpp">
+      <DependentUpon>UserDetailPage.xaml</DependentUpon>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
