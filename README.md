@@ -57,8 +57,8 @@ Strike through = Done
 + ~~Use page/Control for user page as detail for master-detail~~
 + ~~Make layout look nice following 4px grid~~
 + Image loading seems inconsistent, and not as smooth as I'd like in the listview
-	+ Some images getting lost
-	+ Download images first to local disk for available offline
+	+ ~~Some images getting lost~~
+	+ ~~Download images first to local disk for available offline~~
 	+ no nice transitions when loading over the network
 	+ Custom Image loading control to provide nice transition from blank to full?
 
