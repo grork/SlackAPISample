@@ -14,10 +14,12 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProfileImageDownloader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SlackUser.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UserListRequest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProfileImageDownloader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SlackUser.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UserListRequest.cpp" />
   </ItemGroup>

@@ -34,6 +34,16 @@
                     </VisualState>
                 </VisualStateGroup.States>
             </VisualStateGroup>
+            <VisualStateGroup x:Name="NetworkStates">
+                <VisualState x:Name="Offline">
+                    <VisualState.Setters>
+                        <Setter Target="UserList.Visibility"
+                                Value="Collapsed" />
+                        <Setter Target="OfflineMessage.Text"
+                                Value="You're currently offline -- restart the app online to get awesome users!" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -45,6 +55,14 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <TextBlock x:Name="OfflineMessage"
+                   Grid.ColumnSpan="2"
+                   TextWrapping="WrapWholeWords"
+                   Margin="8"
+                   TextAlignment="Center"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center" />
+        
         <ListView x:Name="UsersList"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"

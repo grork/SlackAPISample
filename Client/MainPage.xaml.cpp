@@ -41,6 +41,11 @@ void MainPage::Page_Loaded(Object^, RoutedEventArgs^)
     MainPage^ self = this;
     this->_usersRequest.then([self](UserListResult^ result)
     {
+        if (result->Result == nullptr)
+        {
+            VisualStateManager::GoToState(self, L"Offline", true);
+        }
+
         self->UsersList->ItemsSource = result->Result;
 
         // if we've got saved state in our code, then we should

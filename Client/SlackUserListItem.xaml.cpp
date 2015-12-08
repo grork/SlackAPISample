@@ -5,21 +5,23 @@
 
 #include "pch.h"
 
+#include "ProfileImageDownloader.h"
 #include "SlackUser.h"
 #include "SlackUserListItem.xaml.h"
 
 using namespace Client;
 
+using namespace concurrency;
 using namespace Platform;
+using namespace SharedCode;
 using namespace SlackDataObjects;
+using namespace Windows::Foundation;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Controls::Primitives;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Media::Imaging;
 
-
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 SlackUserListItem::SlackUserListItem()
 {
@@ -38,7 +40,12 @@ void SlackUserListItem::RenderSimpleUser(SlackUser^ user, SelectorItem^ containe
 
 void SlackUserListItem::SlackUserListItem::RenderComplexUser(SlackUser^ user)
 {
-    this->UserImage->Source = ref new BitmapImage(user->SmallProfileImage);
+    SlackUserListItem^ self = this;
+
+    ProfileImageDownloader::DownloadImageForUser(user, ProfileImageSize::Small).then([self](Uri^ image)
+    {
+        self->UserImage->Source = ref new BitmapImage(image);
+    }, task_continuation_context::use_current());
 }
 
 void SlackUserListItem::ClearContent(SelectorItem^ container)

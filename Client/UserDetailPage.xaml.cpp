@@ -1,12 +1,16 @@
 ﻿#include "pch.h"
+#include "ProfileImageDownloader.h"
 #include "SlackUser.h"
 #include "UserDetailPage.xaml.h"
 
 using namespace Client;
 
+using namespace concurrency;
 using namespace Platform;
 using namespace Platform::Collections;
+using namespace SharedCode;
 using namespace SlackDataObjects;
+using namespace Windows::Foundation;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
@@ -24,12 +28,12 @@ void UserDetailPage::OnNavigatedTo(NavigationEventArgs^ e)
 {
     SlackUser^ user = static_cast<SlackUser^>(e->Parameter);
     this->MainGrid->Background = ref new SolidColorBrush(user->Color);
+    UserDetailPage^ self = this;
 
-    if ((user->Images != nullptr) && (user->Images->Size > 0))
+    ProfileImageDownloader::DownloadImageForUser(user, ProfileImageSize::Largest).then([self](Uri^ uri)
     {
-        auto largestImage = user->Images->GetAt(user->Images->Size - 1);
-        this->UserImage->Source = ref new BitmapImage(largestImage);
-    }
+        self->UserImage->Source = ref new BitmapImage(uri);
+    }, task_continuation_context::use_current());
 
     this->NameBlock->Text = user->Name;
     this->RealNameBlock->Text = user->RealName;
