@@ -12,10 +12,14 @@ using namespace Platform;
 using namespace Requests;
 using namespace SlackDataObjects;
 using namespace Windows::Foundation;
+using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Media::Animation;
+using namespace Windows::UI::Xaml::Navigation;
+
+const float MainPage::DESKTOP_SIZE_THRESHOLD = 640;
 
 MainPage::MainPage()
 {
@@ -25,13 +29,22 @@ MainPage::MainPage()
     this->_usersRequest = request->GetResultAsync();
 }
 
-void MainPage::Page_Loaded(Object^ sender, RoutedEventArgs^ e)
+void MainPage::Page_Loaded(Object^, RoutedEventArgs^)
 {
+    this->_previousSize = Window::Current->Bounds.Width;
+
     MainPage^ self = this;
     this->_usersRequest.then([self](UserListResult^ result)
     {
         self->UsersList->ItemsSource = result->Result;
     }, task_continuation_context::use_current());
+
+    this->_sizeChangedToken = Window::Current->SizeChanged += ref new WindowSizeChangedEventHandler(this, &MainPage::Window_Resized);
+}
+
+void MainPage::Page_Unloaded(Object^ sender, RoutedEventArgs^)
+{
+    Window::Current->SizeChanged -= this->_sizeChangedToken;
 }
 
 
@@ -71,22 +84,47 @@ void MainPage::DoubleData_Click(Object^, RoutedEventArgs^)
     }
 }
 
+void MainPage::Window_Resized(Object^, WindowSizeChangedEventArgs^ e)
+{
+    bool previouslyBiggerThanThreshold = (this->_previousSize > MainPage::DESKTOP_SIZE_THRESHOLD);
+    bool nowBiggerThanThreshold = (e->Size.Width > MainPage::DESKTOP_SIZE_THRESHOLD);
+
+    if ((previouslyBiggerThanThreshold && nowBiggerThanThreshold)
+        || (!previouslyBiggerThanThreshold && !nowBiggerThanThreshold)
+        || (!previouslyBiggerThanThreshold && nowBiggerThanThreshold))
+    {
+        // Nothing to do because we didn't cross the transition
+    }
+    else if ((previouslyBiggerThanThreshold && !nowBiggerThanThreshold) && (this->_lastInvokedUser != nullptr))
+    {
+        this->_NavigateMainFrameToUser(this->_lastInvokedUser);
+        Window::Current->SizeChanged -= this->_sizeChangedToken;
+    }
+
+    this->_previousSize = e->Size.Width;
+}
+
 void MainPage::UsersList_ItemClick(Object^ sender, ItemClickEventArgs^ e)
 {
     SlackUser^ user = dynamic_cast<SlackUser^>(e->ClickedItem);
-    Controls::Frame^ targetFrame;
-    NavigationTransitionInfo^ transition;
 
     if (Window::Current->Bounds.Width < 640)
     {
-        targetFrame = this->Frame;
-        transition = ref new DrillInNavigationTransitionInfo();
+        this->_NavigateMainFrameToUser(user);
     }
     else
     {
-        targetFrame = this->DetailFrame;
-        transition = ref new EntranceNavigationTransitionInfo();
+        this->DetailFrame->Navigate(TypeName(UserDetailPage::typeid), user, ref new EntranceNavigationTransitionInfo());
     }
+}
 
-    targetFrame->Navigate(TypeName(UserDetailPage::typeid), user, transition);
+void MainPage::_NavigateMainFrameToUser(SlackUser^ user)
+{
+    this->Frame->Navigate(TypeName(UserDetailPage::typeid), user, ref new DrillInNavigationTransitionInfo());
+}
+
+
+void MainPage::DetailFrame_Navigated(Object^, NavigationEventArgs^ e)
+{
+    this->_lastInvokedUser = dynamic_cast<SlackUser^>(e->Parameter);
 }

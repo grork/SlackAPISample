@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:SlackDataObjects="using:SlackDataObjects"
     mc:Ignorable="d"
-    Loaded="Page_Loaded">
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded">
 
     
     <Grid x:Name="MainGrid"
@@ -65,7 +66,8 @@
                 Select a user to see more detail
             </TextBlock>
             <!-- Sub frame for detail navigations -->
-            <Frame x:Name="DetailFrame">
+            <Frame x:Name="DetailFrame"
+                   Navigated="DetailFrame_Navigated">
                 <Frame.ContentTransitions>
                     <TransitionCollection>
                         <NavigationThemeTransition />
