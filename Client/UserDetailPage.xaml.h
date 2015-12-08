@@ -7,6 +7,7 @@
 
 #include "SlackUser.h"
 #include "UserDetailPage.g.h"
+#include "MainPage.xaml.h"
 
 namespace Client
 {
@@ -21,5 +22,13 @@ namespace Client
 
     protected:
         virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
-	};
+
+    private:
+        void Window_Resized(Platform::Object^ sender, Windows::UI::Core::WindowSizeChangedEventArgs^ e);
+        Windows::Foundation::EventRegistrationToken _sizeChangedToken;
+        float _previousSize = 0.0;
+
+        void Page_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void Page_Unloaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+    };
 }

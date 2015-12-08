@@ -19,6 +19,9 @@ namespace Client
 	public:
 		MainPage();
 
+    internal:
+        static const float DESKTOP_SIZE_THRESHOLD;
+
     private:
         concurrency::task<Requests::UserListResult^> _usersRequest;
         void Page_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
@@ -31,7 +34,6 @@ namespace Client
         float _previousSize = 0.0;
         SlackDataObjects::SlackUser^ _lastInvokedUser;
 
-        static const float DESKTOP_SIZE_THRESHOLD;
         void DetailFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
         void Page_Unloaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
     };

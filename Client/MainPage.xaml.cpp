@@ -47,7 +47,6 @@ void MainPage::Page_Unloaded(Object^ sender, RoutedEventArgs^)
     Window::Current->SizeChanged -= this->_sizeChangedToken;
 }
 
-
 void MainPage::UsersList_ContainerContentChanging(ListViewBase^ sender, ContainerContentChangingEventArgs^ args)
 {
     // Assume it's going to be our control since we own all parts.
@@ -69,7 +68,6 @@ void MainPage::UsersList_ContainerContentChanging(ListViewBase^ sender, Containe
         control->RenderComplexUser(static_cast<SlackUser^>(args->Item));
     }
 }
-
 
 void MainPage::DoubleData_Click(Object^, RoutedEventArgs^)
 {
@@ -122,7 +120,6 @@ void MainPage::_NavigateMainFrameToUser(SlackUser^ user)
 {
     this->Frame->Navigate(TypeName(UserDetailPage::typeid), user, ref new DrillInNavigationTransitionInfo());
 }
-
 
 void MainPage::DetailFrame_Navigated(Object^, NavigationEventArgs^ e)
 {
