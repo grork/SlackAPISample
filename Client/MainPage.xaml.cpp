@@ -15,6 +15,7 @@ using namespace Windows::Foundation;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Interop;
+using namespace Windows::UI::Xaml::Media::Animation;
 
 MainPage::MainPage()
 {
@@ -72,6 +73,20 @@ void MainPage::DoubleData_Click(Object^, RoutedEventArgs^)
 
 void MainPage::UsersList_ItemClick(Object^ sender, ItemClickEventArgs^ e)
 {
-    Controls::Frame^ frame = dynamic_cast<Controls::Frame^>(Window::Current->Content);
-    frame->Navigate(TypeName(UserDetailPage::typeid), e->ClickedItem);
+    SlackUser^ user = dynamic_cast<SlackUser^>(e->ClickedItem);
+    Controls::Frame^ targetFrame;
+    NavigationTransitionInfo^ transition;
+
+    if (Window::Current->Bounds.Width < 640)
+    {
+        targetFrame = this->Frame;
+        transition = ref new DrillInNavigationTransitionInfo();
+    }
+    else
+    {
+        targetFrame = this->DetailFrame;
+        transition = ref new EntranceNavigationTransitionInfo();
+    }
+
+    targetFrame->Navigate(TypeName(UserDetailPage::typeid), user, transition);
 }

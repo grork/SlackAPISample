@@ -25,5 +25,6 @@ namespace Client
         void UsersList_ContainerContentChanging(Windows::UI::Xaml::Controls::ListViewBase^ sender, Windows::UI::Xaml::Controls::ContainerContentChangingEventArgs^ args);
         void DoubleData_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
         void UsersList_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
+        SlackDataObjects::SlackUser^ _lastInvokedUser;
     };
 }

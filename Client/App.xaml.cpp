@@ -18,6 +18,7 @@ using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Navigation;
+using namespace Windows::UI::Xaml::Media::Animation;
 
 App::App()
 {
@@ -50,6 +51,9 @@ void App::OnLaunched(LaunchActivatedEventArgs^ e)
 
 		// Create a Frame to act as the navigation context
 		rootFrame = ref new Frame();
+        TransitionCollection^ transitions = ref new TransitionCollection();
+        transitions->Append(ref new NavigationThemeTransition());
+        rootFrame->ContentTransitions = transitions;
         this->_mainFrame = rootFrame;
         rootFrame->Navigated += ref new NavigatedEventHandler(this, &App::HandleNavigation);
 		rootFrame->Navigate(TypeName(MainPage::typeid), e->Arguments);
