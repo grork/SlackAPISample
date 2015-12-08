@@ -50,10 +50,10 @@ Strike through = Done
 + ~~Add support for splitting the view in full screen mode~~
 	+ ~~Secondary frame, or primary frame that overlays the listview?~~
 	+ Handle back button between the two worlds
-	+ Handle Resizing while navigated to an item
+	+ ~~Handle Resizing while navigated to an item~~
 		+ ~~E.g. if on an item & small, when resized larger should show that item~~
-		+ if on an item when large, should navigate to that page when made smaller
-		+ Need to factor a view model now for the main page to keep state
+		+ ~~if on an item when large, should navigate to that page when made smaller~~
+		+ ~~Need to factor a view model now for the main page to keep state~~
 + ~~Use page/Control for user page as detail for master-detail~~
 + ~~Make layout look nice following 4px grid~~
 + Image loading seems inconsistent, and not as smooth as I'd like in the listview

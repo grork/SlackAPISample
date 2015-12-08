@@ -152,6 +152,7 @@
     <ClInclude Include="UserDetailPage.xaml.h">
       <DependentUpon>UserDetailPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="UserListState.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -203,6 +204,7 @@
     <ClCompile Include="UserDetailPage.xaml.cpp">
       <DependentUpon>UserDetailPage.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="UserListState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@
 #include "SlackUserListItem.xaml.h"
 #include "UserDetailPage.xaml.h"
 #include "UserListRequest.h"
+#include "UserListState.h"
 
 using namespace Client;
 
@@ -24,19 +25,39 @@ const float MainPage::DESKTOP_SIZE_THRESHOLD = 640;
 MainPage::MainPage()
 {
 	InitializeComponent();
-
-    auto request = ref new UserListRequest(App::SlackApiToken);
-    this->_usersRequest = request->GetResultAsync();
+}
+void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
+{
+    UserListState^ state = dynamic_cast<UserListState^>(e->Parameter);
+    this->_usersRequest = state->GetUserList();
+    this->_pageState = state;
 }
 
 void MainPage::Page_Loaded(Object^, RoutedEventArgs^)
 {
+    // Initalizae the previous size so we know when we're resizing over our threshold
     this->_previousSize = Window::Current->Bounds.Width;
 
     MainPage^ self = this;
     this->_usersRequest.then([self](UserListResult^ result)
     {
         self->UsersList->ItemsSource = result->Result;
+
+        // if we've got saved state in our code, then we should
+        // try and restore that
+        if (self->_pageState->CurrentUser != nullptr)
+        {
+            // if we've big enough to show the details page, navigate to it ...
+            if (Window::Current->Bounds.Width > MainPage::DESKTOP_SIZE_THRESHOLD)
+            {
+                self->_NavigateDetailFrameToUser(self->_pageState->CurrentUser);
+            }
+            else
+            {
+                // ... but if we're not, clear it so we don't keep it hanging around
+                self->_pageState->CurrentUser = nullptr;
+            }
+        }
     }, task_continuation_context::use_current());
 
     this->_sizeChangedToken = Window::Current->SizeChanged += ref new WindowSizeChangedEventHandler(this, &MainPage::Window_Resized);
@@ -93,9 +114,9 @@ void MainPage::Window_Resized(Object^, WindowSizeChangedEventArgs^ e)
     {
         // Nothing to do because we didn't cross the transition
     }
-    else if ((previouslyBiggerThanThreshold && !nowBiggerThanThreshold) && (this->_lastInvokedUser != nullptr))
+    else if ((previouslyBiggerThanThreshold && !nowBiggerThanThreshold) && (this->_pageState->CurrentUser != nullptr))
     {
-        this->_NavigateMainFrameToUser(this->_lastInvokedUser);
+        this->_NavigateMainFrameToUser(this->_pageState->CurrentUser);
         Window::Current->SizeChanged -= this->_sizeChangedToken;
     }
 
@@ -105,15 +126,21 @@ void MainPage::Window_Resized(Object^, WindowSizeChangedEventArgs^ e)
 void MainPage::UsersList_ItemClick(Object^ sender, ItemClickEventArgs^ e)
 {
     SlackUser^ user = dynamic_cast<SlackUser^>(e->ClickedItem);
+    this->_pageState->CurrentUser = user;
 
-    if (Window::Current->Bounds.Width < 640)
+    if (Window::Current->Bounds.Width < MainPage::DESKTOP_SIZE_THRESHOLD)
     {
         this->_NavigateMainFrameToUser(user);
     }
     else
     {
-        this->DetailFrame->Navigate(TypeName(UserDetailPage::typeid), user, ref new EntranceNavigationTransitionInfo());
+        this->_NavigateDetailFrameToUser(user);
     }
+}
+
+void MainPage::_NavigateDetailFrameToUser(SlackUser^ user)
+{
+    this->DetailFrame->Navigate(TypeName(UserDetailPage::typeid), user, ref new EntranceNavigationTransitionInfo());
 }
 
 void MainPage::_NavigateMainFrameToUser(SlackUser^ user)
@@ -123,5 +150,5 @@ void MainPage::_NavigateMainFrameToUser(SlackUser^ user)
 
 void MainPage::DetailFrame_Navigated(Object^, NavigationEventArgs^ e)
 {
-    this->_lastInvokedUser = dynamic_cast<SlackUser^>(e->Parameter);
+    this->_pageState->CurrentUser = dynamic_cast<SlackUser^>(e->Parameter);
 }

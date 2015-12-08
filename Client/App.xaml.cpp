@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
+#include "UserListState.h"
 
 using namespace Client;
 
@@ -56,7 +57,7 @@ void App::OnLaunched(LaunchActivatedEventArgs^ e)
         rootFrame->ContentTransitions = transitions;
         this->_mainFrame = rootFrame;
         rootFrame->Navigated += ref new NavigatedEventHandler(this, &App::HandleNavigation);
-		rootFrame->Navigate(TypeName(MainPage::typeid), e->Arguments);
+		rootFrame->Navigate(TypeName(MainPage::typeid), ref new UserListState());
 
 		// Place the frame in the current Window
 		Window::Current->Content = rootFrame;

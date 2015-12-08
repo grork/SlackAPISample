@@ -17,12 +17,16 @@
     <ClCompile Include="MainPage.xaml.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SlackUserListItem.xaml.cpp" />
+    <ClCompile Include="UserDetailPage.xaml.cpp" />
+    <ClCompile Include="UserListState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h" />
     <ClInclude Include="MainPage.xaml.h" />
     <ClInclude Include="SlackUserListItem.xaml.h" />
+    <ClInclude Include="UserDetailPage.xaml.h" />
+    <ClInclude Include="UserListState.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
