@@ -1,4 +1,4 @@
-This is a sample project REDACTED
+This is a learning project accessing Slack in a Windows / Windows Phone App
 
 # TODO #
 
@@ -7,7 +7,6 @@ Strike through = Done
 ## Getting Setup ##
 + ~~Create Git Repo on TFS for shared work~~
 	+ ~~Check in TODO from here~~
-	+ ~~REDACTED~~
 + ~~Add Empty Project~~
 + ~~Add Empty Test Project~~
 + ~~Add Shared Items project for easier unit testing of non-ui code~~
@@ -72,4 +71,6 @@ Strike through = Done
 
 #### Reference ####
 API Doc: https://api.slack.com/methods/users.list
-API Token: REDACTED
+
+You'll need an API token, which you can find details on here:
+https://api.slack.com/authentication/basics

@@ -8,7 +8,7 @@ using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Storage;
 
-#define SLACK_API_TOKEN L"REDACTED"
+#define SLACK_API_TOKEN L"YOUR_KEY_HERE"
 #define LOCAL_CACHE_FILE_NAME L"slackcache.json"
 
 namespace Tests

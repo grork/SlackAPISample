@@ -24,7 +24,7 @@ namespace Client
         {
             Platform::String^ get()
             {
-                return Platform::StringReference(L"REDACTED");
+                return Platform::StringReference(L"YOUR_KEY_HERE");
             }
         }
 	};
